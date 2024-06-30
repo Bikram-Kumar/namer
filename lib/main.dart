@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:provider/provider.dart';
+import 'package:username_generator/word_getter.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,8 +33,8 @@ class MyAppState extends ChangeNotifier {
 
   var favourites = <WordPair>[];
 
-  void getNext() {
-    current = WordPair.random();
+  void getNext() async {
+    current = WordPair(await WordGetter.word, await WordGetter.word);
     favIcon = Icons.favorite_border;
     notifyListeners();
   }
