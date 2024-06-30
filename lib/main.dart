@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:provider/provider.dart';
 import 'package:username_generator/word_getter.dart';
 
@@ -16,25 +15,30 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => MyAppState(),
         child: MaterialApp(
-          title: 'Namer',
+          title: 'Home',
           theme: ThemeData(
               useMaterial3: true,
               colorScheme: ColorScheme.fromSeed(
-                  seedColor: Color.fromARGB(255, 0, 252, 168))),
+                  seedColor: Color.fromARGB(255, 0, 252, 168)),
+          ),
           home: MyHomePage(),
+          scaffoldMessengerKey: WordGetter.scafMessengerKey,
+
         ));
   }
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
 
-  var favIcon = Icons.favorite_border;
+  String current = "";
+  IconData favIcon = Icons.favorite_border;
 
-  var favourites = <WordPair>[];
+  var favourites = <String>{};
+
+
 
   void getNext() async {
-    current = WordPair(await WordGetter.word, await WordGetter.word);
+    current = await WordGetter.word;
     favIcon = Icons.favorite_border;
     notifyListeners();
   }
@@ -111,14 +115,18 @@ class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var pair = appState.current;
+    var word = appState.current;
+
+    if (word == ":NoInternet:") {
+
+    }
 
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Word(pair: pair),
+            Word(word: word),
             SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -147,10 +155,10 @@ class GeneratorPage extends StatelessWidget {
 class Word extends StatelessWidget {
   const Word({
     super.key,
-    required this.pair,
+    required this.word,
   });
 
-  final WordPair pair;
+  final String word;
 
   @override
   Widget build(BuildContext context) {
@@ -164,7 +172,7 @@ class Word extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text(
-          "${pair.first}${pair.second}",
+          word,
           style: style,
         ),
       ),
@@ -193,7 +201,7 @@ class FavouritesPage extends StatelessWidget {
         children: [
           Padding(padding: const EdgeInsets.all(10)),
       
-          for (WordPair wp in appState.favourites) Center(child: Text(wp.asLowerCase)),
+          for (String w in appState.favourites) Center(child: Text(w)),
         ],
       ),
     );
