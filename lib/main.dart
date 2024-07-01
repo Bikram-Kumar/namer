@@ -85,12 +85,22 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Theme.of(context).colorScheme.primary,
           leading: IconButton(
             icon: Icon(Icons.home),
-            onPressed: (){},
+            onPressed: (){
+              if (selectedIndex == 0) return;
+              setState(() {
+                selectedIndex = 0;
+              });
+            },
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: (){},
+              icon: Icon(Icons.favorite),
+              onPressed: (){
+                if (selectedIndex == 1) return;
+                setState(() {
+                selectedIndex = 1;
+              });
+              },
             ),
           ],
           
