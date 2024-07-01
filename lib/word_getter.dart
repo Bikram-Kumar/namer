@@ -13,7 +13,7 @@ class WordGetter {
 
   static Future<String> get word async {
     if (words.isEmpty) {
-      if (!(await getMore())) {
+      if (!(await fetchRandoms())) {
         return "TackyVortex";
       }
     }
@@ -23,14 +23,13 @@ class WordGetter {
     return first;
   }
 
-  static Future<bool> getMore() async {
+  static Future<bool> fetchRandoms() async {
 
     var res;
     try {
       res = await http.get(Uri.parse("https://api.urbandictionary.com/v0/random"));
     } catch (e) {
-        var snackBar = SnackBar(content: Text("Could not access Urban Dictionary. Try checking your internet connection."));
-        scafMessengerKey.currentState!.showSnackBar(snackBar);
+        showSnackBarMessage("Could not access Urban Dictionary. Try checking your internet connection.");
         return false;
     }
 
@@ -50,10 +49,47 @@ class WordGetter {
       return true;
     } else {
       // couldn't fetch 
-      var snackBar = SnackBar(content: Text("Something went wrong. Please try again later."));
-      scafMessengerKey.currentState!.showSnackBar(snackBar);
+      showSnackBarMessage("Something went wrong. Please try again later.");
       return false;
     }
+  }
+
+
+  static Future<bool> fetchSimilar(String term) async {
+
+    var res;
+    try {
+      res = await http.get(Uri.parse("https://api.urbandictionary.com/v0/autocomplete-extra?term=$term"));
+    } catch (e) {
+        showSnackBarMessage("Could not access Urban Dictionary. Try checking your internet connection.");
+        return false;
+    }
+
+
+    if (res.statusCode == 200) {
+      Map<String, dynamic> json = jsonDecode(res.body);
+
+      if (json.containsKey("results")) {
+        var results = List<Map<String, dynamic>>.from(json["results"]);
+        print("got ${results.length} similar");
+
+        for (var m in results) {
+          words.add(m["term"]);
+        }
+
+      }
+      return true;
+    } else {
+      // couldn't fetch 
+      showSnackBarMessage("Something went wrong. Please try again later.");
+      return false;
+    }
+  }
+
+
+  static void showSnackBarMessage(String message) {
+    var snackBar = SnackBar(content: Text(message));
+    scafMessengerKey.currentState!.showSnackBar(snackBar);
   }
 
 

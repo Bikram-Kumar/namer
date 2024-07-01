@@ -19,10 +19,12 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
               useMaterial3: true,
               colorScheme: ColorScheme.fromSeed(
-                  seedColor: Color.fromARGB(255, 0, 252, 168)),
+                  seedColor: Color.fromARGB(255, 0, 221, 136)           )
           ),
           home: MyHomePage(),
           scaffoldMessengerKey: WordGetter.scafMessengerKey,
+
+          debugShowCheckedModeBanner: false,
 
         ));
   }
@@ -74,39 +76,64 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return LayoutBuilder(builder: (context, constraints) {
+
+
       return Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: false,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text('Favorites'),
-                  ),
-                ],
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: page,
-              ),
+        appBar: AppBar(
+          title: Text("Username Generator", style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          leading: IconButton(
+            icon: Icon(Icons.home),
+            onPressed: (){},
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: (){},
             ),
           ],
+          
+          
+          iconTheme: IconThemeData(color: Colors.white),
         ),
+
+          body: page,
       );
+
+      // return Scaffold(
+      //   body: Row(
+      //     children: [
+      //       SafeArea(
+      //         child: NavigationRail(
+      //           extended: false,
+      //           destinations: [
+      //             NavigationRailDestination(
+      //               icon: Icon(Icons.home),
+      //               label: Text('Home'),
+      //             ),
+      //             NavigationRailDestination(
+      //               icon: Icon(Icons.favorite),
+      //               label: Text('Favorites'),
+      //             ),
+      //           ],
+      //           selectedIndex: selectedIndex,
+      //           onDestinationSelected: (value) {
+      //             setState(() {
+      //               selectedIndex = value;
+      //             });
+      //           },
+      //         ),
+      //       ),
+      //       Expanded(
+      //         child: Container(
+      //           color: Theme.of(context).colorScheme.primaryContainer,
+      //           child: page,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // );
     });
   }
 }
@@ -152,13 +179,26 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
-class Word extends StatelessWidget {
+class Word extends StatefulWidget {
   const Word({
     super.key,
     required this.word,
   });
 
   final String word;
+
+  @override
+  State<Word> createState() => _WordState();
+
+}
+
+class _WordState extends State<Word> {
+
+  @override
+  void initState() {
+    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +212,7 @@ class Word extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text(
-          word,
+          widget.word,
           style: style,
         ),
       ),
